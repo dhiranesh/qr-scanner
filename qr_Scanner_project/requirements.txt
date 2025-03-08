@@ -7,3 +7,7 @@ google-auth==2.27.0  # Google Authentication
 google-auth-oauthlib==1.2.0  # Google OAuth
 google-auth-httplib2==0.2.0
 google-api-python-client==2.128.0  # Google Sheets API
+opencv-python-headless
+gspread
+oauth2client
+numpy
