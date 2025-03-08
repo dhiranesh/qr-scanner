@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner</title>
+
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            color: white;
+        }
+
+        /* Scanner Container */
+        .scanner-container {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            margin: auto;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        /* Video Container */
+        .video-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-container img {
+            border: 3px solid white;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        /* Scanned Count */
+        #scanned-count {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        /* Scanned List */
+        ul {
+            list-style-type: none;
+            padding: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        ul li {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+        }
+
+        ul li:last-child {
+            border-bottom: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .scanner-container {
+                padding: 15px;
+            }
+            h2 {
+                font-size: 20px;
+            }
+            .video-container img {
+                max-width: 100%;
+            }
+            #scanned-count {
+                font-size: 16px;
+            }
+            ul li {
+                font-size: 14px;
+            }
+        }
+    </style>
+
+    <script>
+        function fetchScannedData() {
+            fetch("{{ url_for('get_scanned_data') }}")
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("scanned-count").innerText = `Scanned: ${data.length}/200`;
+                    let listHtml = "";
+                    data.forEach((item, index) => {
+                        listHtml += `<li>${index + 1}. ${item}</li>`;
+                    });
+                    document.getElementById("scanned-list").innerHTML = listHtml;
+                })
+                .catch(error => console.error("Error:", error));
+        }
+
+        setInterval(fetchScannedData, 2000);  // Fetch data every 2 seconds
+    </script>
+</head>
+<body>
+
+    <div class="scanner-container">
+        <h2>Dakshaa Event attenance</h2>
+
+        <!-- Live Camera Preview -->
+        <div class="video-container">
+            <img src="{{ url_for('video_feed') }}" alt="Live Camera Feed">
+        </div>
+
+        <p id="scanned-count">Scanned: 0/200</p>
+        <ul id="scanned-list"></ul>
+    </div>
+
+</body>
+</html>
